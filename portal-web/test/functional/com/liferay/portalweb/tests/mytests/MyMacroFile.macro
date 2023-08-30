@@ -1,0 +1,12 @@
+definition {
+
+	macro searchingTheTestElement {
+		Type(
+			locator1 = "MyPathFile#SEARCH_BAR",
+			value1 = "test");
+
+		Click(locator1 = "MyPathFile#BUTTON_SEARCH");
+		
+	}
+
+}
