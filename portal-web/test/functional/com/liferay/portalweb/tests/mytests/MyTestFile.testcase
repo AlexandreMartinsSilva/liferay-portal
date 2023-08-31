@@ -20,10 +20,9 @@ definition {
 	test CanSearchOnSearchBar {
 		MyMacroFile.searchingTheTestElement();
 
-AssertElementPresent(
+		AssertElementPresent(
 			key_formName = "Test",
 			locator1 = "MyPathFile#CONFIRM_SEARCH");
-
 	}
-		
+
 }

@@ -6,7 +6,6 @@ definition {
 			value1 = "test");
 
 		Click(locator1 = "MyPathFile#BUTTON_SEARCH");
-		
 	}
 
 }
