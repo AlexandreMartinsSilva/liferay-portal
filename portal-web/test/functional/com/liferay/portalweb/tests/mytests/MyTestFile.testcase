@@ -1,0 +1,29 @@
+@component-name = "portal-web-forms-and-data-lists"
+definition {
+
+	property testray.main.component.name = "Forms";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		Navigator.openURL();
+	}
+
+	tearDown {
+		User.logoutPG();
+	}
+
+	@description = "Can search on Search bar"
+	@priority = 2
+	test CanSearchOnSearchBar {
+		MyMacroFile.searchingTheTestElement();
+
+AssertElementPresent(
+			key_formName = "Test",
+			locator1 = "MyPathFile#CONFIRM_SEARCH");
+
+	}
+		
+}
