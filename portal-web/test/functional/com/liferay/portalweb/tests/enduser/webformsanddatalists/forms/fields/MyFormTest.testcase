@@ -1,0 +1,76 @@
+@component-name = "portal-web-forms-and-data-lists"
+definition {
+    property osgi.module.configuration.file.names = "com.liferay.frontend.js.loader.modules.extender.internal.configuration.Details.config";
+    property osgi.module.configurations = "waitTimeout=\"15\"";
+    property portal.release = "true";
+    property portal.upstream = "true";
+    property testray.main.component.name = "Forms";
+    setUp {
+        TestCase.setUpPortalInstance();
+        User.firstLoginPG();
+    }
+    tearDown {
+        var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+        if (${testLiferayVirtualInstance} == "true") {
+            PortalInstances.tearDownCP();
+        }
+        else {
+            Navigator.openURL();
+            ProductMenu.gotoPortlet(
+                category = "Content & Data",
+                portlet = "Forms");
+            FormsAdmin.teardownForms();
+            Navigator.gotoNavItem(navItem = "Element Sets");
+            FormsAdmin.teardownElementSets();
+            PagesAdmin.tearDownCP();
+        }
+    }
+    @description = "Can Submit a Form with Two Different Languages"
+    @priority = 4
+    test CanSubmitFormWithTwoDifferentLanguages {
+        FormsAdmin.addForm();
+        Form.gotoAddField(
+            fieldPositionNumber = 0,
+            fieldType = "Text");
+        Form.editFieldLabelMetal(fieldValue = "Full Name");
+        Form.closeSidebar();
+        Form.gotoAddField(
+            fieldPositionNumber = 1,
+            fieldType = "Numeric");
+        Form.editFieldLabelMetal(fieldValue = "Age");
+        Form.addTranslation(localizedLanguage = "Portuguese (Brazil)");
+        FormViewBuilder.editFieldLabel(
+            fieldLabel = "Full Name",
+            label = "Nome Completo");
+        FormViewBuilder.editFieldLabel(
+            fieldLabel = "Age",
+            label = "Idade");
+        Form.publishForm();
+        FormsAdminNavigator.gotoPublishedForm();
+        FormViewBuilder.editText(
+            fieldName = "Full Name",
+            fieldValue = "Alexandre Martins");
+        FormViewBuilder.editText(
+            fieldName = "Age",
+            fieldValue = 20);
+        FormPortlet.submit();
+        Form.submitAgain();
+        FormPortlet.changeLocale(locale = "português-Brasil");
+        FormViewBuilder.editText(
+            fieldName = "Nome Completo",
+            fieldValue = "Alex Martins");
+        FormViewBuilder.editText(
+            fieldName = "Idade",
+            fieldValue = 19);
+        FormPortlet.submit();
+        Form.submitAgain();
+        FormsAdmin.openFormsAdmin(siteURLKey = "guest");
+        FormsAdminNavigator.gotoViewEntries();
+        LexiconEntry.viewEntryContent(
+            rowAny = "Alexandre Martins",
+            rowEntry = 20);
+        LexiconEntry.viewEntryContent(
+            rowAny = "Alex Martins",
+            rowEntry = 19);
+    }
+}
