@@ -1011,6 +1011,78 @@ definition {
 			fieldValue = "1/1/16");
 	}
 
+	@description = "Can Submit a Form with Two Different Languages"
+	@priority = 4
+	test CanSubmitFormWithTwoDifferentLanguages {
+		FormsAdmin.addForm();
+
+		Form.gotoAddField(
+			fieldPositionNumber = 0,
+			fieldType = "Text");
+
+		Form.editFieldLabelMetal(fieldValue = "Full Name");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = 1,
+			fieldType = "Numeric");
+
+		Form.editFieldLabelMetal(fieldValue = "Age");
+
+		Form.addTranslation(localizedLanguage = "Portuguese (Brazil)");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Full Name",
+			label = "Nome Completo");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Age",
+			label = "Idade");
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormViewBuilder.editText(
+			fieldName = "Full Name",
+			fieldValue = "Alexandre Martins");
+
+		FormViewBuilder.editText(
+			fieldName = "Age",
+			fieldValue = 20);
+
+		FormPortlet.submit();
+
+		Form.submitAgain();
+
+		FormPortlet.changeLocale(locale = "português-Brasil");
+
+		FormViewBuilder.editText(
+			fieldName = "Nome Completo",
+			fieldValue = "Alex Martins");
+
+		FormViewBuilder.editText(
+			fieldName = "Idade",
+			fieldValue = 19);
+
+		FormPortlet.submit();
+
+		Form.submitAgain();
+
+		FormsAdmin.openFormsAdmin(siteURLKey = "guest");
+
+		FormsAdminNavigator.gotoViewEntries();
+
+		LexiconEntry.viewEntryContent(
+			rowAny = "Alexandre Martins",
+			rowEntry = 20);
+
+		LexiconEntry.viewEntryContent(
+			rowAny = "Alex Martins",
+			rowEntry = 19);
+	}
+
 	@description = "LPS-167481 - Verify that the back button on the forms view entries page works correctly without creating new forms."
 	@priority = 4
 	test CheckBackButtonFormsViewEntries {
@@ -2411,78 +2483,6 @@ definition {
 		Form.viewFormDescription(formDescription = "Form Description");
 
 		FormFields.viewTextLabel(fieldLabel = "Text");
-	}
-
-	@description = "Can Submit a Form with Two Different Languages"
-	@priority = 4
-	test CanSubmitFormWithTwoDifferentLanguages {
-		FormsAdmin.addForm();
-
-		Form.gotoAddField(
-			fieldPositionNumber = 0,
-			fieldType = "Text");
-
-		Form.editFieldLabelMetal(fieldValue = "Full Name");
-
-		Form.closeSidebar();
-
-		Form.gotoAddField(
-			fieldPositionNumber = 1,
-			fieldType = "Numeric");
-
-		Form.editFieldLabelMetal(fieldValue = "Age");
-
-		Form.addTranslation(localizedLanguage = "Portuguese (Brazil)");
-
-		FormViewBuilder.editFieldLabel(
-			fieldLabel = "Full Name",
-			label = "Nome Completo");
-
-		FormViewBuilder.editFieldLabel(
-			fieldLabel = "Age",
-			label = "Idade");
-
-		Form.publishForm();
-
-		FormsAdminNavigator.gotoPublishedForm();
-
-		FormViewBuilder.editText(
-			fieldName = "Full Name",
-			fieldValue = "Alexandre Martins");
-
-		FormViewBuilder.editText(
-			fieldName = "Age",
-			fieldValue = 20);
-
-		FormPortlet.submit();
-
-		Form.submitAgain();
-
-		FormPortlet.changeLocale(locale = "português-Brasil");
-
-		FormViewBuilder.editText(
-			fieldName = "Nome Completo",
-			fieldValue = "Alex Martins");
-
-		FormViewBuilder.editText(
-			fieldName = "Idade",
-			fieldValue = 19);
-
-		FormPortlet.submit();
-
-		Form.submitAgain();
-
-		FormsAdmin.openFormsAdmin(siteURLKey = "guest");
-
-		FormsAdminNavigator.gotoViewEntries();
-
-		LexiconEntry.viewEntryContent(
-			rowAny = "Alexandre Martins",
-			rowEntry = 20);
-
-		LexiconEntry.viewEntryContent(
-			rowAny = "Alex Martins",
-			rowEntry = 19);
 	}
 
 }
