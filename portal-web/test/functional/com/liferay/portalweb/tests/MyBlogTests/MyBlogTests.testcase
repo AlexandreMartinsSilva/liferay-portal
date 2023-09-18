@@ -1,0 +1,254 @@
+@component-name = "portal-lima"
+definition {
+
+    property testray.main.component.name = "Blogs";
+    
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Test Site Name");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Blogs Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = 1,
+			groupName = "Test Site Name",
+			layoutName = "Blogs Page",
+			widgetName = "Blogs");
+
+		Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+		
+	}
+
+	tearDown {
+		PortalInstances.tearDownCP();
+
+		JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+}
+
+	@description = "Can Create a Blog"
+	@priority = 5
+	test CanCreateBlog {
+
+		task ("When the user adds a Blog Entry") {
+
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title 1");
+
+			Button.clickPublish();
+	}
+
+		task ("Then the Blog Entry should display on the page") {
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+				
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title 1");
+		
+		}		
+
+	}
+
+	@description = "Can Edit Blog"
+	@priority = 5
+	test CanEditBlog {
+		task ("And a Blog Entry exists") {
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+
+			Button.clickPublish();
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+
+			  }
+
+		task ("When the User edits the blog Entry"){
+
+			BlogsNavigator.gotoEditPG(entryTitle = "Blogs Entry Title");
+
+			BlogsEntry.editTitle(
+				entryTitle = "Blogs Entry Title",
+				entryTitleEdit = "Blogs Entry Title 1");
+
+			BlogsEntry.editContent(
+				entryContent = "Blogs Entry Content",
+				entryContentEdit = "Blogs Entry Content 1");
+
+			Button.clickPublish();
+		}
+		task ("Then the Blog Entry should be edited"){
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content 1",
+				entryTitle = "Blogs Entry Title 1");
+		}		
+	}
+
+	@description = "Can delete Blog"
+	@priority = 5
+	test CanDeletBlog {
+
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			BlogsEntry.addEntryContent(
+				entryContent = "My Content",
+				entryTitle = "My Blogs");
+
+			Button.clickPublish();
+
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+			
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+
+			Button.clickPublish();
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+		task ("And a 2 Blog Entries exists") {
+			
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+			
+			BlogsEntry.viewEntryPG(
+				entryContent = "My Content",
+				entryTitle = "My Blogs");
+		}
+
+		task ("Then Blog Entry 1 should not exist") {
+
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+			BlogsEntry.moveToRecycleBinPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+		}
+
+		task ("And Blog Entry 2 should exist") {
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "My Content",
+				entryTitle = "My Blogs");
+		}
+	}
+	@description = "Can Search Blogs"
+	@priority = 5
+	test CanSearchBlogs {
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			BlogsEntry.addEntryContent(
+				entryContent = "My Content",
+				entryTitle = "My Blogs");
+
+			Button.clickPublish();
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "test-site-name");
+
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+
+			Button.clickPublish();
+
+			Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+		task ("And a 2 Blog Entries exists") {
+			
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+			
+			BlogsEntry.viewEntryPG(
+				entryContent = "My Content",
+				entryTitle = "My Blogs");
+		}
+
+		
+		task ("When the User searches for Blog Entry 1") {
+
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
+
+			BlogsEntry.searchCP(
+				entryContent = "My Content",
+				entrySearchTerm = "My Content",
+				entryTitle = "My Blogs");
+
+			}
+
+		task ("Then Blog Entry 1 should display") {
+
+		Navigator.gotoSitePage(
+				pageName = "Blogs Page",
+				siteName = "Test Site Name");
+
+		}
+	}
+
+}
