@@ -1,0 +1,145 @@
+@component-name = "portal-document-management"
+definition {
+
+	property testray.main.component.name = "Document Management";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Test Site Name");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Documents and Media Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = 1,
+			groupName = "Test Site Name",
+			layoutName = "Documents and Media Page",
+			widgetName = "Documents and Media");
+
+		Navigator.gotoSitePage(
+			pageName = "Documents and Media Page",
+			siteName = "Test Site Name");
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Documents and Media");
+	}
+
+	tearDown {
+		PortalInstances.tearDownCP();
+
+		JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+	}
+
+	@description = "Can Create a Documents and Media"
+	@priority = 5
+	test CanCreateDM {
+		task ("When the user create a Documents and Media (Upload the file)") {
+			DMDocument.addCP(
+				dmDocumentFile = "Document_3.txt",
+				dmDocumentTitle = "Document and Media");
+
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+		}
+
+		task ("Then the Documents and Media should display on the page") {
+			Navigator.gotoSitePage(
+				pageName = "Documents and Media Page",
+				siteName = "Test Site Name");
+
+			DMDocument.viewPG(dmDocumentTitle = "Document and Media");
+		}
+	}
+
+	@description = "Can Delete DM"
+	@priority = 5
+	test CanDeleteDM {
+		task ("And create 2 Documents and Media (Upload the file)") {
+			DMDocument.addCP(
+				dmDocumentFile = "Document_3.txt",
+				dmDocumentTitle = "Document and Media");
+
+			DMDocument.addCP(
+				dmDocumentFile = "Document_5.txt",
+				dmDocumentTitle = "DM Document");
+
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+		}
+
+		task ("When the User delete a document and media") {
+			DMDocument.deleteCP(dmDocumentTitle = "Document and Media");
+		}
+
+		task ("Then DMTest 1 should not exist") {
+			AssertElementNotPresent(
+				key_rowEntry = "Document and Media",
+				locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+		}
+
+		task ("And DMTest 2 should exist") {
+			AssertElementPresent(
+				key_rowEntry = "DM Document",
+				locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+		}
+	}
+
+	@description = "Can Download DM"
+	@priority = 5
+	test CanDownloadDM {
+		task ("And create 2 Documents and Media (Upload the file)") {
+			DMDocument.addCP(
+				dmDocumentFile = "Document_3.txt",
+				dmDocumentTitle = "Document and Media");
+
+			DMDocument.addCP(
+				dmDocumentFile = "Document_5.txt",
+				dmDocumentTitle = "DM Document");
+
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+		}
+
+		task ("When the user download document from DMTest1") {
+			DMDocument.downloadCP(
+				dmDocumentSize = "4 MB",
+				dmDocumentTitle = "DM Document");
+		}
+
+		task ("Then the file that was downloaded must be from DMTest1") {
+			DMDocument.assertFileNameFromTempFolder(fileName = "Document_5.txt");
+		}
+
+		task ("And DMTest2 file should not be downloaded") {
+			DMDocument.assertNoFileNameFromTempFolder(fileName = "Document_3.txt");
+		}
+	}
+
+	@description = "Can Edit DM"
+	@priority = 5
+	test CanEditDM {
+		task ("And create a Document and Media (Upload the file)") {
+			DMDocument.addCP(
+				dmDocumentFile = "Document_3.txt",
+				dmDocumentTitle = "Document and Media");
+
+			Alert.viewSuccessMessageText(successMessage = "Your request completed successfully.");
+		}
+
+		task ("When the User edits the Documents and Media (Change DM name and the file)") {
+			DMDocument.editCP(
+				dmDocumentFileEdit = "Document_1.jpg",
+				dmDocumentTitle = "Document and Media",
+				dmDocumentTitleEdit = "Document_1.jpg");
+		}
+
+		task ("Then the Documents and Media should be edited") {
+			AssertElementPresent(
+				key_rowEntry = "Document_1.jpg",
+				locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+		}
+	}
+
+}
