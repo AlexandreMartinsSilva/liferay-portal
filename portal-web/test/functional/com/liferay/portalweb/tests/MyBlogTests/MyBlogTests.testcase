@@ -10,6 +10,8 @@ definition {
 
 		HeadlessSite.addSite(siteName = "Test Site Name");
 
+		task ("given the addition of a blog"){
+
 		JSONLayout.addPublicLayout(
 			groupName = "Test Site Name",
 			layoutName = "Blogs Page");
@@ -19,10 +21,12 @@ definition {
 			groupName = "Test Site Name",
 			layoutName = "Blogs Page",
 			widgetName = "Blogs");
-
-		Navigator.gotoSitePage(
-			pageName = "Blogs Page",
-			siteName = "Test Site Name");
+			
+	    JSONBlog.addEntry(
+			groupName = "Test Site Name",
+			entryContent = "My Content",
+			entryTitle = "My Blogs");
+		}
 	}
 
 	tearDown {
@@ -54,25 +58,14 @@ definition {
 			BlogsEntry.viewEntryPG(
 				entryContent = "Blogs Entry Content",
 				entryTitle = "Blogs Entry Title 1");
+
 		}
 	}
 
 	@description = "Can delete Blog"
 	@priority = 5
 	test CanDeletBlog {
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "test-site-name");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "My Content",
-			entryTitle = "My Blogs");
-
-		Button.clickPublish();
-
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "test-site-name");
+		task ("And a 2 Blog Entries exists") {
 
 		Navigator.gotoSitePage(
 			pageName = "Blogs Page",
@@ -92,7 +85,7 @@ definition {
 			pageName = "Blogs Page",
 			siteName = "Test Site Name");
 
-		task ("And a 2 Blog Entries exists") {
+		
 			BlogsEntry.viewEntryPG(
 				entryContent = "Blogs Entry Content",
 				entryTitle = "Blogs Entry Title");
@@ -131,38 +124,24 @@ definition {
 	@priority = 5
 	test CanEditBlog {
 		task ("And a Blog Entry exists") {
-			Navigator.gotoSitePage(
-				pageName = "Blogs Page",
-				siteName = "Test Site Name");
-
 			BlogsNavigator.openToAddEntry(
 				layoutName = "Blogs Page",
 				siteURLKey = "test-site-name");
 
-			BlogsEntry.addEntryContent(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title");
-
-			Button.clickPublish();
-
 			Navigator.gotoSitePage(
 				pageName = "Blogs Page",
 				siteName = "Test Site Name");
-
-			BlogsEntry.viewEntryPG(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title");
 		}
 
 		task ("When the User edits the blog Entry") {
-			BlogsNavigator.gotoEditPG(entryTitle = "Blogs Entry Title");
+			BlogsNavigator.gotoEditPG(entryTitle = "My Blogs");
 
 			BlogsEntry.editTitle(
-				entryTitle = "Blogs Entry Title",
+				entryTitle = "My Blogs",
 				entryTitleEdit = "Blogs Entry Title 1");
 
 			BlogsEntry.editContent(
-				entryContent = "Blogs Entry Content",
+				entryContent = "My Content",
 				entryContentEdit = "Blogs Entry Content 1");
 
 			Button.clickPublish();
@@ -178,35 +157,22 @@ definition {
 	@description = "Can Search Blogs"
 	@priority = 5
 	test CanSearchBlogs {
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "test-site-name");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "My Content",
-			entryTitle = "My Blogs");
-
-		Button.clickPublish();
-
-		Navigator.gotoSitePage(
-			pageName = "Blogs Page",
-			siteName = "Test Site Name");
+		task ("And a 2 Blog Entries exists") {
 
 		BlogsNavigator.openToAddEntry(
 			layoutName = "Blogs Page",
 			siteURLKey = "test-site-name");
 
-		BlogsEntry.addEntryContent(
+		 JSONBlog.addEntry(
+			groupName = "Test Site Name",
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Button.clickPublish();
-
 		Navigator.gotoSitePage(
 			pageName = "Blogs Page",
 			siteName = "Test Site Name");
 
-		task ("And a 2 Blog Entries exists") {
+		
 			BlogsEntry.viewEntryPG(
 				entryContent = "Blogs Entry Content",
 				entryTitle = "Blogs Entry Title");
